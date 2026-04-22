@@ -3093,7 +3093,7 @@ md_begin (void)
   else
     {
       x86_dwarf2_return_column = 8;
-      x86_cie_data_alignment = -4;
+      x86_cie_data_alignment = 0;
     }
 
   /* NB: FUSED_JCC_PADDING frag must have sufficient room so that it
@@ -9525,6 +9525,14 @@ output_insn (void)
 	x86_isa_1_used |= GNU_PROPERTY_X86_ISA_1_V4;
     }
 #endif
+
+  if (! x86_cie_data_alignment)
+    {
+      if (flag_code == CODE_16BIT)
+	x86_cie_data_alignment = -2;
+      else
+	x86_cie_data_alignment = -4;
+    }
 
   /* Tie dwarf2 debug info to the address at the start of the insn.
      We can't do this after the insn has been output as the current
