@@ -116,7 +116,18 @@
 #ifndef LISTING_LHS_CONT_LINES
 #define LISTING_LHS_CONT_LINES 4
 #endif
+#ifndef MAX_PAPER_WIDTH
+#define MAX_PAPER_WIDTH 500
+#endif
+#ifndef DEFAULT_PAPER_WIDTH
+#define DEFAULT_PAPER_WIDTH 200
+#endif
 #define MAX_DATELEN 30
+
+#if DEFAULT_PAPER_WIDTH > MAX_PAPER_WIDTH \
+     || LISTING_RHS_WIDTH > MAX_PAPER_WIDTH
+#error
+#endif
 
 /* This structure remembers which .s were used.  */
 typedef struct file_info_struct
@@ -198,7 +209,7 @@ static file_info_type *          file_info_head;
 static file_info_type *          last_open_file_info;
 static FILE *                    last_open_file;
 static struct list_info_struct * head;
-static int                       paper_width = 200;
+static int                       paper_width = DEFAULT_PAPER_WIDTH;
 static int                       paper_height = 60;
 
 extern int                       listing;
@@ -1019,7 +1030,7 @@ typedef struct cached_line
 {
   file_info_type * file;
   unsigned int     line;
-  char             buffer [LISTING_RHS_WIDTH];
+  char             buffer [MAX_PAPER_WIDTH];
 } cached_line;
 
 static void
@@ -1519,6 +1530,9 @@ listing_psize (int width_only)
     if (exp.X_op == O_constant)
       {
 	offsetT new_width = exp.X_add_number;
+
+	if (new_width > MAX_PAPER_WIDTH)
+	  as_bad (_("new paper width is too large"));
 
 	if (new_width > 7)
 	  paper_width = new_width;
