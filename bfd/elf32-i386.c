@@ -4738,6 +4738,30 @@ elf_i386_link_setup_gnu_properties (struct bfd_link_info *info)
 
 #include "elf32-target.h"
 
+/* IA-16 support. */
+/* FIXME?: For the time being, we still claim to be elf32-i386. */
+
+static bool
+elf32_i8086_elf_object_p (bfd *abfd)
+{
+  /* Set the right machine number for an IA-16 ELF file.  */
+  bfd_default_set_arch_mach (abfd, bfd_arch_i386, bfd_mach_i386_i8086);
+  return true;
+}
+
+#undef  TARGET_LITTLE_SYM
+#define TARGET_LITTLE_SYM		i386_elf32_i8086_vec
+
+#undef	elf_backend_object_p
+#define elf_backend_object_p		elf32_i8086_elf_object_p
+
+#undef	elf32_bed
+#define	elf32_bed				elf32_i386_i8086_bed
+
+#include "elf32-target.h"
+
+#undef	elf_backend_object_p
+
 /* FreeBSD support.  */
 
 #undef	TARGET_LITTLE_SYM

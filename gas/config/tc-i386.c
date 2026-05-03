@@ -2925,6 +2925,10 @@ i386_mach (void)
       else
 	return bfd_mach_x64_32;
     }
+  else if (!strncmp (default_arch, "i8086", 5))
+    {
+      return bfd_mach_i386_i8086;
+    }
   else if (!strncmp (default_arch, "i386", 4)
 	   || !strcmp (default_arch, "iamcu"))
     {
@@ -3089,6 +3093,11 @@ md_begin (void)
       x86_dwarf2_return_column = 16;
 #endif
       x86_cie_data_alignment = -8;
+    }
+  else if (flag_code == CODE_16BIT)
+    {
+      x86_dwarf2_return_column = 8;
+      x86_cie_data_alignment = -2;
     }
   else
     {
@@ -13292,6 +13301,7 @@ const char *md_shortopts = "qnO::";
 #define OPTION_MLFENCE_BEFORE_RET (OPTION_MD_BASE + 33)
 #define OPTION_MUSE_UNALIGNED_VECTOR_MOVE (OPTION_MD_BASE + 34)
 #define OPTION_32_SEGELF (OPTION_MD_BASE + 35)
+#define OPTION_16_SEGELF (OPTION_MD_BASE + 36)
 
 struct option md_longopts[] =
 {
@@ -13303,6 +13313,7 @@ struct option md_longopts[] =
 #if defined (OBJ_ELF) || defined (OBJ_MAYBE_ELF)
 # ifdef ENABLE_X86_HPA_SEGELF
   {"32-segelf", no_argument, NULL, OPTION_32_SEGELF},
+  {"16-segelf", no_argument, NULL, OPTION_16_SEGELF},
 # endif
   {"x32", no_argument, NULL, OPTION_X32},
   {"mshared", no_argument, NULL, OPTION_MSHARED},
@@ -13446,6 +13457,9 @@ md_parse_option (int c, const char *arg)
 # ifdef ENABLE_X86_HPA_SEGELF
     case OPTION_32_SEGELF:
       default_arch = "i386:segelf";
+      break;
+    case OPTION_16_SEGELF:
+      default_arch = "i8086:segelf";
       break;
 # endif
 #endif
@@ -14169,6 +14183,14 @@ i386_target_format (void)
       update_code_flag (CODE_32BIT, 1);
 # ifdef ENABLE_X86_HPA_SEGELF
       if (default_arch[4] != 0)
+	x86_elf_abi = I386_SEGELF_ABI;
+# endif
+    }
+  else if (!strncmp (default_arch, "i8086", 5))
+    {
+      update_code_flag (CODE_16BIT, 1);
+# ifdef ENABLE_X86_HPA_SEGELF
+      if (default_arch[5] != 0)
 	x86_elf_abi = I386_SEGELF_ABI;
 # endif
     }

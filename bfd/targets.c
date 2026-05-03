@@ -747,6 +747,7 @@ extern const bfd_target i386_coff_go32stubbed_vec;
 extern const bfd_target i386_coff_lynx_vec;
 extern const bfd_target i386_elf32_vec;
 extern const bfd_target i386_elf32_fbsd_vec;
+extern const bfd_target i386_elf32_i8086_vec;
 extern const bfd_target i386_elf32_sol2_vec;
 extern const bfd_target i386_elf32_vxworks_vec;
 extern const bfd_target i386_elks_vec;
@@ -1093,6 +1094,7 @@ static const bfd_target * const _bfd_target_vector[] =
 	&i386_coff_lynx_vec,
 	&i386_elf32_vec,
 	&i386_elf32_fbsd_vec,
+	&i386_elf32_i8086_vec,
 	&i386_elf32_sol2_vec,
 	&i386_elf32_vxworks_vec,
 	&i386_mach_o_vec,
